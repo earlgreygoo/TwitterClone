@@ -31,8 +31,7 @@ var Header = React.createClass({
 	render: function() {
 		return (
 			<div className="header">
-				<h1> HEY AND argghh </h1>
-
+				<h1> !twitter </h1>
 				<input placeholder="Search tweets" onKeyDown={this._search} />
 
 			</div>
