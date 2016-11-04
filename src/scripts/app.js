@@ -11,12 +11,17 @@ var TweetCollection = Backbone.Collection.extend({
 		url: "https://twitclone-example.now.sh/api/tweet"
 	})
 
+var SearchCollection = Backbone.Collection.extend({
+		url: "https://twitclone-example.now.sh/api/tweet/search"
+	})
 
 var Controller = Backbone.Router.extend({
 		routes: {
 
 			"home": "handleHome",
-			"default": "handleDefault"
+			"search/:term": "handleSearch",
+			"*default": "handleDefault",
+			
 
 		},
 
@@ -26,6 +31,15 @@ var Controller = Backbone.Router.extend({
 			console.log(tweetCollection)
 			
 			ReactDOM.render(<TweetView collection={tweetCollection} />, document.querySelector('.container'))
+		},
+
+		handleSearch: function(term) {
+			var searchCollection = new SearchCollection()
+			searchCollection.fetch({
+				data: {
+					"term": term
+				}
+			}).then(function(){ReactDOM.render(<TweetView collection={searchCollection} />, document.querySelector('.container'))})
 		},
 		handleDefault: function() {
 			location.hash = "home"

@@ -17,12 +17,23 @@ var TweetView = React.createClass({
 
 
 var Header = React.createClass({
+
+	_search: function(event){
+		
+		if(event.keyCode === 13){
+			console.log("searching")
+			location.hash = "search/" + event.target.value
+			event.target.value = ""
+		}
+	},
+
+
 	render: function() {
 		return (
 			<div className="header">
-				<h1> HEY AND STUFF </h1>
+				<h1> HEY AND argghh </h1>
 
-				<input placeholder="Search tweets"/>
+				<input placeholder="Search tweets" onKeyDown={this._search} />
 
 			</div>
 
@@ -44,7 +55,7 @@ var TweetContainer = React.createClass({
 			})
 		}
 		currentMeaningOfThis.props.collection.on("sync",updateState)
-	}
+	},
 	render: function() {
 		return (
 			<div className="tweet-container">
