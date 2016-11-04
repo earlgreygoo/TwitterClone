@@ -1,20 +1,30 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-
-
 var TweetView = React.createClass({
-	render: function(){
-		console.log("TweetView component", this)
+	getInitialState: function() {
+		return {
+			collection: this.props.collection
+		}
+	},
+	componentWillMount: function() {
+		var currentMeaningOfThis = this
+		var updateState = function(){
+			currentMeaningOfThis.setState({
+				collection: currentMeaningOfThis.props.collection
+			})
+		}
+		this.props.collection.on("sync", updateState)
+	},
+	render: function() {
 		return (
-			<div className="home-view">
+			<div className="tweet-view">
 				<Header />
-				<TweetContainer collection={this.props.collection} />
+				<TweetContainer collection={this.state.collection}/>
 			</div>
 			)
 	}
 })
-
 
 var Header = React.createClass({
 
@@ -35,18 +45,24 @@ var Header = React.createClass({
 
 				<input placeholder="Search tweets" onKeyDown={this._search} />
 
-			</div>
 
+			</div>
 			)
 	}
 })
 
 var TweetContainer = React.createClass({
-	getInitialState: function() {
-		return {
-			collection: this.props.collection
+	_displayTweets: function() {
+		var jsxArr = [],
+			tweetCollection = this.props.collection
+
+		for(var i = 0; i < tweetCollection.models.length; i++){
+			var tweetModel = tweetCollection.models[i]
+			jsxArr.push(<Tweet model={tweetModel} />)
 		}
+		return jsxArr;
 	},
+
 	componentWillMount: function() {
 		var currentMeaningOfThis = this
 		var updateState = function() {
@@ -59,10 +75,19 @@ var TweetContainer = React.createClass({
 	render: function() {
 		return (
 			<div className="tweet-container">
-				<p> we are getting stuff </p>
+				{this._displayTweets()}
 			</div>	
+			)
+	}
+})
 
-
+var Tweet = React.createClass({
+	render: function() {
+		var model = this.props.model
+		return (
+			<div className="tweet">
+				<h5>{model.get("content")}</h5> 
+			</div>
 			)
 	}
 })

@@ -3,33 +3,27 @@ import ReactDOM from 'react-dom'
 import Backbone from 'backbone'
 import TweetView from './views/tweetView'
 
-console.log("helo")
 var app = function() {
 
-
-var TweetCollection = Backbone.Collection.extend({
+	//MODEL
+	var TweetCollection = Backbone.Collection.extend({
 		url: "https://twitclone-example.now.sh/api/tweet"
 	})
 
-var SearchCollection = Backbone.Collection.extend({
+
+	var SearchCollection = Backbone.Collection.extend({
 		url: "https://twitclone-example.now.sh/api/tweet/search"
 	})
-
-var Controller = Backbone.Router.extend({
+	//CONTROLLER
+	var Controller = Backbone.Router.extend({
 		routes: {
-
 			"home": "handleHome",
 			"search/:term": "handleSearch",
 			"*default": "handleDefault",
-			
-
 		},
-
 		handleHome: function(){
 			var tweetCollection = new TweetCollection()
 			tweetCollection.fetch()
-			console.log(tweetCollection)
-			
 			ReactDOM.render(<TweetView collection={tweetCollection} />, document.querySelector('.container'))
 		},
 
@@ -49,6 +43,6 @@ var Controller = Backbone.Router.extend({
 			Backbone.history.start()
 		}
 	})
-	var controller = new Controller();
+	var controller = new Controller()
 }
 app()
