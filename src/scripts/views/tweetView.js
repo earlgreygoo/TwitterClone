@@ -52,6 +52,7 @@ var Header = React.createClass({
 
 var TweetContainer = React.createClass({
 	_displayTweets: function() {
+		console.log(this.props.collection)
 		var jsxArr = [],
 			tweetCollection = this.props.collection
 
