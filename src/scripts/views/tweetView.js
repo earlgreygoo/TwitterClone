@@ -21,7 +21,9 @@ var Header = React.createClass({
 		return (
 			<div className="header">
 				<h1> HEY AND STUFF </h1>
-				<input type="text" >
+
+				<input placeholder="Search tweets"/>
+
 			</div>
 
 			)
@@ -29,6 +31,20 @@ var Header = React.createClass({
 })
 
 var TweetContainer = React.createClass({
+	getInitialState: function() {
+		return {
+			collection: this.props.collection
+		}
+	},
+	componentWillMount: function() {
+		var currentMeaningOfThis = this
+		var updateState = function() {
+			currentMeaningOfThis.setState({
+				collection: currentMeaningOfThis.props.collection
+			})
+		}
+		currentMeaningOfThis.props.collection.on("sync",updateState)
+	}
 	render: function() {
 		return (
 			<div className="tweet-container">
