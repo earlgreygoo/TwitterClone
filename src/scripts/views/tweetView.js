@@ -21,7 +21,7 @@ var Header = React.createClass({
 		return (
 			<div className="header">
 				<h1> HEY AND STUFF </h1>
-				<input type="text" />
+				<input type="text" >
 			</div>
 
 			)

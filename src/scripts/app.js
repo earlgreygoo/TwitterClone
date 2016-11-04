@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import Backbone from 'backbone'
-import TweetView from './views/tweetview'
+import TweetView from './views/tweetView'
 
 const app = function() {
 
@@ -18,6 +18,7 @@ var TweetCollection = Backbone.Collection.extend({
 var Controller = Backbone.Router.extend({
 		routes: {
 			'home': 'handleHome',
+			'default': 'handleDefault'
 		},
 
 		handleHome: function(){
@@ -30,6 +31,10 @@ var Controller = Backbone.Router.extend({
 			})
 
 
+		},
+
+		handleDefault: function() {
+			location.hash = "#home"
 		},
 		
 		initialize: function(){
