@@ -9,21 +9,20 @@ var TweetView = React.createClass({
 	},
 	componentWillMount: function() {
 		var currentMeaningOfThis = this
-		var updateState = function() {
+		var updateState = function(){
 			currentMeaningOfThis.setState({
 				collection: currentMeaningOfThis.props.collection
 			})
 		}
-		this.props.collection.on("sync",updateState)
-		console.log("data from TweetView component:",this.props.collection)
+		this.props.collection.on("sync", updateState)
 	},
-	render: function(){
+	render: function() {
 		return (
 			<div className="tweet-view">
 				<Header />
-				<TweetContainer collection={this.props.collection} />
+				<TweetContainer collection={this.state.collection}/>
 			</div>
-		)
+			)
 	}
 })
 
@@ -40,13 +39,32 @@ var Header = React.createClass({
 })
 
 var TweetContainer = React.createClass({
+	_displayTweets: function() {
+		var jsxArr = [],
+			tweetCollection = this.props.collection
+
+		for(var i = 0; i < tweetCollection.models.length; i++){
+			var tweetModel = tweetCollection.models[i]
+			jsxArr.push(<Tweet model={tweetModel} />)
+		}
+		return jsxArr;
+	},
 	render: function() {
 		return (
 			<div className="tweet-container">
-				<p> we are getting stuff </p>
+				{this._displayTweets()}
 			</div>	
+			)
+	}
+})
 
-
+var Tweet = React.createClass({
+	render: function() {
+		var model = this.props.model
+		return (
+			<div className="tweet">
+				<h5>{model.get("content")}</h5> 
+			</div>
 			)
 	}
 })

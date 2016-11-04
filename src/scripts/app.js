@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom'
 import Backbone from 'backbone'
 import TweetView from './views/tweetView'
 
-console.log("helo")
 var app = function() {
 
 	//MODEL
@@ -17,13 +16,9 @@ var app = function() {
 			"home": "handleHome",
 			"*default": "handleDefault"
 		},
-
 		handleHome: function(){
 			var tweetCollection = new TweetCollection()
-			tweetCollection.fetch({
-				dataType: "jsonp"
-			})
-			
+			tweetCollection.fetch()
 			ReactDOM.render(<TweetView collection={tweetCollection} />, document.querySelector('.container'))
 		},
 		handleDefault: function() {
