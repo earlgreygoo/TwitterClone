@@ -33,7 +33,8 @@ var app = function() {
 				data: {
 					"term": term
 				}
-			}).then(function(){ReactDOM.render(<TweetView collection={searchCollection} />, document.querySelector('.container'))})
+			})
+			ReactDOM.render(<TweetView collection={searchCollection} />, document.querySelector('.container'))
 		},
 		handleDefault: function() {
 			location.hash = "home"
