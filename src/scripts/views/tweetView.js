@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import WriterView from './writerView'
 
 var TweetView = React.createClass({
 	getInitialState: function() {
@@ -51,6 +52,7 @@ var Header = React.createClass({
 				<h1> HEY AND argghh </h1>
 
 				<input placeholder="Search tweets" onKeyDown={this._search} />
+				<WriterView />
 			</div>
 			)
 	}
