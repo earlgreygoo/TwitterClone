@@ -7,16 +7,24 @@ var TweetView = React.createClass({
 			collection: this.props.collection
 		}
 	},
-	
-	componentWillMount: function() {
-		var currentMeaningOfThis = this
-		var updateState = function(){
-			currentMeaningOfThis.setState({
-				collection: currentMeaningOfThis.props.collection
-			})
-		}
-		this.props.collection.on("sync", updateState)
-	},
+
+    _listenToCollection: function(collection) {
+        var currentMeaningOfThis = this
+        var updateState = function() {
+            console.log(this)
+            currentMeaningOfThis.setState({
+                collection: currentMeaningOfThis.props.collection
+            })
+        }
+        collection.on('sync', updateState)
+    },
+    componentWillMount: function() {
+        this._listenToCollection(this.props.collection)
+    },
+	componentWillReceiveProps: function(newProps) {
+        this._listenToCollection(newProps.collection)
+    },
+
 	render: function() {
 		return (
 			<div className="tweet-view">
