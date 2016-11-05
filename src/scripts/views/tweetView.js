@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import Header from './header'
 
 var TweetView = React.createClass({
 	getInitialState: function() {
@@ -27,25 +28,6 @@ var TweetView = React.createClass({
 			<div className="tweet-view">
 				<Header />
 				<TweetContainer collection={this.state.collection}/>
-			</div>
-			)
-	}
-})
-
-var Header = React.createClass({
-
-	_search: function(event){
-		if(event.keyCode === 13){
-			console.log("searching")
-			location.hash = "search/" + event.target.value
-			event.target.value = ""
-		}
-	},
-	render: function() {
-		return (
-			<div className="header">
-				<h1> HEY AND argghh </h1>
-				<input placeholder="Search tweets" onKeyDown={this._search} />
 			</div>
 			)
 	}
@@ -102,6 +84,14 @@ A look back at the KD-Westbrook beef as told by a high schooler.
  */
 
 var Tweet = React.createClass({
+	_getAvatarUrl: function() {
+		var model = this.props.model
+		if(model.get("user").avatarURL)
+			return model.get("user").avatarURL
+		else {
+			return ""
+		}
+	}
 	_getTimeElapsed: function(timeTweetCreated) {
 		var then = new Date(timeTweetCreated),
 			now = new Date(),
@@ -135,8 +125,8 @@ var Tweet = React.createClass({
 		return (
 			<div className="tweet">
 				<div className="tweet-header">
-					<img src={model.get("user").avatarURL} />
-					<strong>{model.get("user").username}</strong>
+					<img src={this._getAvatarUrl()} />
+					<strong>{model.get("user").username ? "yes" : "no"}</strong>
 					<span>{this._getTimeElapsed(model.get("createdAt"))}</span>
 				</div>
 				<h5>{model.get("content")}</h5> 
