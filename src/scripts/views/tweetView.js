@@ -7,6 +7,7 @@ var TweetView = React.createClass({
 			collection: this.props.collection
 		}
 	},
+	
 	componentWillMount: function() {
 		var currentMeaningOfThis = this
 		var updateState = function(){
