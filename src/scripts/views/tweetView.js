@@ -36,17 +36,36 @@ var TweetView = React.createClass({
 var TweetContainer = React.createClass({
 	getInitialState: function() {
 		return {
-			numberTweetsToDisplay: 5,
-			remainingTweets: 6,
+			collection: this.props.collection,
+			numberTweetsToDisplay: 0,
 			displayButton: "block"
 		}
 	},
+	_calculateRemainingTweets: function () {
+		var numTweets = this.state.numberTweetsToDisplay,
+			totalTweets = this.state.collection.length
+		
+		return (numTweets + 5 <= totalTweets ? numTweets + 5 : totalTweets)
+	},
+    _listenToCollection: function(collection) {
+        var currentThis = this
+        var updateState = function() {
+            currentThis.setState({
+                collection: currentThis.props.collection,
+                numberTweetsToDisplay: currentThis._calculateRemainingTweets()
+            })
+        }
+        collection.on('update', updateState)
+    },
+    componentWillMount: function() {
+        this._listenToCollection(this.props.collection)
+    },
 	_displayTweets: function() {
 		var jsxArr = [],
 			tweetCollection = this.props.collection,
-			tweetsToDisplay = this.state.numberTweetsToDisplay
+			numTweetsToDisplay = this.state.numberTweetsToDisplay
 
-		for(var i = 0; i < tweetCollection.models.slice(0,tweetsToDisplay).length; i++){
+		for(var i = 0; i < numTweetsToDisplay; i++){
 			var tweetModel = tweetCollection.models[i]
 			if(tweetModel.get("user")){
 				jsxArr.push(<Tweet model={tweetModel} />)
@@ -56,17 +75,18 @@ var TweetContainer = React.createClass({
 	},
 	_displayMoreTweets: function() {
 		this.setState({
-			numberTweetsToDisplay: this.state.numberTweetsToDisplay + 5,
-			remainingTweets: this.props.collection.models.length - this.state.numberTweetsToDisplay
+			numberTweetsToDisplay: this._calculateRemainingTweets()
 		})
 	},
 	_getRemainingTweets: function() {
-		if(this.state.remainingTweets > 5){
-			return "Show 5 more tweets"
-		} else {
-			this.state.displayButton = "none"
-			return "Show" + this.state.remainingTweets + "more tweets"
+		var numTweets = this.state.numberTweetsToDisplay,
+			totalTweets = this.state.collection.length,
+			numToShow = 5
+
+		if(numTweets + 5 >= totalTweets){
+			numToShow = totalTweets % numTweets
 		}
+		return "Show " + numToShow + " more tweets"
 	},
 	render: function() {
 		var moreTweetsButton = {
@@ -74,11 +94,12 @@ var TweetContainer = React.createClass({
 		}
 		console.log("numberTweets:",this.props.collection.models.length)
 		console.log("numberTweetstoShow:",this.state.numberTweetsToDisplay)
-		console.log("remainingTweets:",this.state.remainingTweets)
 		return (
 			<div className="tweet-container">
 				{this._displayTweets()}
-				<button style={moreTweetsButton} onClick={this._displayMoreTweets}>{this._getRemainingTweets()}</button>
+				<button style={moreTweetsButton} onClick={this._displayMoreTweets}>
+					{this._getRemainingTweets()}
+				</button>
 			</div>	
 			)
 	}
@@ -87,9 +108,10 @@ var TweetContainer = React.createClass({
 var Tweet = React.createClass({
 	_getAvatarUrl: function() {
 		var model = this.props.model
-		if(model.get("user").hasOwnProperty("avatarURL"))
+		if(model.get("user").hasOwnProperty("avatarURL") &&
+			model.get("user").avatarURL.match(/(com|org|net)\g/)){
 			return model.get("user").avatarURL
-		else {
+		} else {
 			return "https://abs.twimg.com/icons/apple-touch-icon-192x192.png"
 		}
 	},
