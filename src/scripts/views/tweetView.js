@@ -34,11 +34,17 @@ var TweetView = React.createClass({
 })
 
 var TweetContainer = React.createClass({
+	getInitialState: function() {
+		return {
+			numberTweetsToDisplay: 5
+		}
+	},
 	_displayTweets: function() {
 		var jsxArr = [],
-			tweetCollection = this.props.collection
+			tweetCollection = this.props.collection,
+			tweetsToDisplay = this.state.numberTweetsToDisplay
 
-		for(var i = 0; i < tweetCollection.models.length; i++){
+		for(var i = 0; i < tweetCollection.models.slice(0,tweetsToDisplay).length; i++){
 			var tweetModel = tweetCollection.models[i]
 			if(tweetModel.get("user")){
 				jsxArr.push(<Tweet model={tweetModel} />)
@@ -46,10 +52,16 @@ var TweetContainer = React.createClass({
 		}
 		return jsxArr;
 	},
+	_displayMoreTweets: function() {
+		this.setState({
+			numberTweetsToDisplay: this.state.numberTweetsToDisplay + 5
+		})
+	},
 	render: function() {
 		return (
 			<div className="tweet-container">
 				{this._displayTweets()}
+				<button onClick={this._displayMoreTweets}>Show 5 more tweets</button>
 			</div>	
 			)
 	}
