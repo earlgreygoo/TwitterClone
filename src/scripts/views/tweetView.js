@@ -139,7 +139,11 @@ var Tweet = React.createClass({
 					<strong>{this._getUsername()}</strong>
 					<span>{this._getTimeElapsed(model.get("createdAt"))}</span>
 				</div>
-				<h5>{this.props.model.get("content")}</h5> 
+				<h5>{model.get("content")}</h5> 
+				<div className="tweet-nav">
+					<span>{"replies " + model.get("replyToTweet")}</span>
+					<span>{"likes " + model.get("likes")}</span>
+				</div>
 			</div>
 			)
 	}
