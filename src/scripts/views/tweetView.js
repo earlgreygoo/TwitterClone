@@ -36,7 +36,9 @@ var TweetView = React.createClass({
 var TweetContainer = React.createClass({
 	getInitialState: function() {
 		return {
-			numberTweetsToDisplay: 5
+			numberTweetsToDisplay: 5,
+			remainingTweets: 6,
+			displayButton: "block"
 		}
 	},
 	_displayTweets: function() {
@@ -54,48 +56,33 @@ var TweetContainer = React.createClass({
 	},
 	_displayMoreTweets: function() {
 		this.setState({
-			numberTweetsToDisplay: this.state.numberTweetsToDisplay + 5
+			numberTweetsToDisplay: this.state.numberTweetsToDisplay + 5,
+			remainingTweets: this.props.collection.models.length - this.state.numberTweetsToDisplay
 		})
 	},
+	_getRemainingTweets: function() {
+		if(this.state.remainingTweets > 5){
+			return "Show 5 more tweets"
+		} else {
+			this.state.displayButton = "none"
+			return "Show" + this.state.remainingTweets + "more tweets"
+		}
+	},
 	render: function() {
+		var moreTweetsButton = {
+			display: this.state.displayButton
+		}
+		console.log("numberTweets:",this.props.collection.models.length)
+		console.log("numberTweetstoShow:",this.state.numberTweetsToDisplay)
+		console.log("remainingTweets:",this.state.remainingTweets)
 		return (
 			<div className="tweet-container">
 				{this._displayTweets()}
-				<button onClick={this._displayMoreTweets}>Show 5 more tweets</button>
+				<button style={moreTweetsButton} onClick={this._displayMoreTweets}>{this._getRemainingTweets()}</button>
 			</div>	
 			)
 	}
 })
-/*SportsCenter ‏
-@SportsCenter
-31m31 minutes ago
-A look back at the KD-Westbrook beef as told by a high schooler.
-
- {
-    "id": 2,
-    "content": "This.",
-    "user": {
-      "id": 1,
-      "username": "ironicdolphin",
-      "avatarURL": "https://images.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.pbs.org%2Fnewshour%2Fwp-content%2Fuploads%2F2014%2F03%2Fdolphin.jpg&f=1",
-      "createdAt": "2016-11-05T19:03:29.074864+00:00",
-      "tweetId": 2
-    },
-    "replyToTweet": 1,
-    "isRetweet": true,
-    "tags": [
-      {
-        "id": 1,
-        "value": "tacos",
-        "createdAt": "2016-11-05T19:03:29.081231+00:00",
-        "tweetId": 2
-      }
-    ],
-    "likes": 2,
-    "createdAt": "2016-11-05T19:03:29.282826+00:00"
-  },
-
- */
 
 var Tweet = React.createClass({
 	_getAvatarUrl: function() {
