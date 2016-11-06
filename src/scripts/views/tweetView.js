@@ -40,7 +40,9 @@ var TweetContainer = React.createClass({
 
 		for(var i = 0; i < tweetCollection.models.length; i++){
 			var tweetModel = tweetCollection.models[i]
-			jsxArr.push(<Tweet model={tweetModel} />)
+			if(tweetModel.get("user")){
+				jsxArr.push(<Tweet model={tweetModel} />)
+			}
 		}
 		return jsxArr;
 	},
@@ -86,12 +88,20 @@ A look back at the KD-Westbrook beef as told by a high schooler.
 var Tweet = React.createClass({
 	_getAvatarUrl: function() {
 		var model = this.props.model
-		if(model.get("user").avatarURL)
+		if(model.get("user").hasOwnProperty("avatarURL"))
 			return model.get("user").avatarURL
 		else {
-			return ""
+			return "https://abs.twimg.com/icons/apple-touch-icon-192x192.png"
 		}
-	}
+	},
+	_getUsername: function() {
+		var model = this.props.model
+		if(model.get("user").hasOwnProperty("username")){
+			return model.get("user").username
+		} else {
+			return "Unknown"
+		}
+	},
 	_getTimeElapsed: function(timeTweetCreated) {
 		var then = new Date(timeTweetCreated),
 			now = new Date(),
@@ -126,10 +136,10 @@ var Tweet = React.createClass({
 			<div className="tweet">
 				<div className="tweet-header">
 					<img src={this._getAvatarUrl()} />
-					<strong>{model.get("user").username ? "yes" : "no"}</strong>
+					<strong>{this._getUsername()}</strong>
 					<span>{this._getTimeElapsed(model.get("createdAt"))}</span>
 				</div>
-				<h5>{model.get("content")}</h5> 
+				<h5>{this.props.model.get("content")}</h5> 
 			</div>
 			)
 	}
