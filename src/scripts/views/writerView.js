@@ -11,11 +11,13 @@ var TweetModel = Backbone.Model.extend({
 
 
 var hashParse = function(string) {
-	var os = ""
+	var os = "string "
     var hash = string.match(/#\w+/g)
-    for (var i=0;i<hash.length;i++){
-        os += hash[i].slice(1) + " " 
-    }
+    if(hash){
+    	for (var i=0;i<hash.length;i++){
+       	 os += hash[i].slice(1).toLowerCase() + " " 
+   	 }
+   	}
     return os
 }
 
@@ -45,7 +47,8 @@ var WriterView = React.createClass({
 		var tweet = document.querySelector(".tweetContent").value
 		var avatar = document.querySelector(".Uploadimage").value
 		var tag = hashParse(tweet)
-		console.log(name,tweet)
+
+		console.log(name,tweet,tag)
 
 
 
@@ -89,7 +92,7 @@ var WriterView = React.createClass({
 				
 					})
 
-		tweetmodel.save({success:function(){window.location.reload(true)}})
+		tweetmodel.save(null,{success:function(){window.location.reload(true)}})
 		
 		}
 	},
