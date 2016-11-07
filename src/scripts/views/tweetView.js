@@ -144,6 +144,24 @@ var Tweet = React.createClass({
 			return weeks + "w"
 		}
 	},
+	_hashParse: function(string) {
+		var source = "#search/"+string.slice(1)
+	    if(string.match(/#\w+/g)){
+	    	return <a href={source}>{string} </a>
+	    } else {
+	    	return string + " "
+	    }
+	},
+	_checkForHashes: function(content) {
+		var splitContent = content.split(" "),
+			newContentArr = []
+		for(var i = 0; i < splitContent.length; i++){
+			var word = splitContent[i],
+				possibleHash = this._hashParse(word)
+				newContentArr.push(possibleHash)
+		}
+		return newContentArr
+	},
 	render: function() {
 		var model = this.props.model
 		return (
@@ -153,7 +171,7 @@ var Tweet = React.createClass({
 					<strong>{this._getUsername()}</strong>
 					<span>{this._getTimeElapsed(model.get("createdAt"))}</span>
 				</div>
-				<h5>{model.get("content")}</h5> 
+				<h5>{this._checkForHashes(model.get("content"))}</h5> 
 				<div className="tweet-nav">
 					<span>{"replies " + model.get("replyToTweet")}</span>
 					<span>{"likes " + model.get("likes")}</span>
