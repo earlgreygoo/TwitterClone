@@ -11,12 +11,12 @@ var Header = React.createClass({
 	},
 	render: function() {
 		return (
-			<div className="header">
+			<header>
 				<a href="#home">
 					<h1>Twitter</h1>
 				</a>
 				<input placeholder="Search tweets" onKeyDown={this._search} />
-			</div>
+			</header>
 			)
 	}
 })
