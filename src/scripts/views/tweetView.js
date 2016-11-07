@@ -5,37 +5,6 @@ import Header from './header'
 var TweetView = React.createClass({
 	getInitialState: function() {
 		return {
-			collection: this.props.collection
-		}
-	},
-    _listenToCollection: function(collection) {
-        var currentMeaningOfThis = this
-        var updateState = function() {
-            currentMeaningOfThis.setState({
-                collection: currentMeaningOfThis.props.collection
-            })
-        }
-        collection.on('sync', updateState)
-    },
-    componentWillMount: function() {
-        this._listenToCollection(this.props.collection)
-    },
-	componentWillReceiveProps: function(newProps) {
-        this._listenToCollection(newProps.collection)
-    },
-	render: function() {
-		return (
-			<div className="tweet-view">
-				<Header />
-				<TweetContainer collection={this.state.collection}/>
-			</div>
-			)
-	}
-})
-
-var TweetContainer = React.createClass({
-	getInitialState: function() {
-		return {
 			collection: this.props.collection,
 			numberTweetsToDisplay: 0,
 			displayButton: "block"
@@ -43,39 +12,42 @@ var TweetContainer = React.createClass({
 	},
 	_calculateRemainingTweets: function () {
 		var numTweets = this.state.numberTweetsToDisplay,
-			totalTweets = this.state.collection.length
-		
-		return (numTweets + 5 <= totalTweets ? numTweets + 5 : totalTweets)
+			totalTweets = this.props.collection.models.length
+
+			return numTweets + 5 <= totalTweets ? numTweets + 5 : totalTweets
 	},
     _listenToCollection: function(collection) {
+
         var currentThis = this
         var updateState = function() {
             currentThis.setState({
                 collection: currentThis.props.collection,
-                numberTweetsToDisplay: currentThis._calculateRemainingTweets()
+                numberTweetsToDisplay: 0
             })
         }
+        var resetState = function() {
+        	currentThis.setState({
+        		collection: currentThis.props.collection,
+        		numberTweetsToDisplay: currentThis._calculateRemainingTweets(),
+        		displayButton: "block"
+        	})
+        }
         collection.on('update', updateState)
+        collection.on('sync', resetState)
     },
     componentWillMount: function() {
         this._listenToCollection(this.props.collection)
     },
-	_displayTweets: function() {
-		var jsxArr = [],
-			tweetCollection = this.props.collection,
-			numTweetsToDisplay = this.state.numberTweetsToDisplay
+	componentWillReceiveProps: function(newProps) {
+        this._listenToCollection(newProps.collection)
+    },
 
-		for(var i = 0; i < numTweetsToDisplay; i++){
-			var tweetModel = tweetCollection.models[i]
-			if(tweetModel.get("user")){
-				jsxArr.push(<Tweet model={tweetModel} />)
-			}
-		}
-		return jsxArr;
-	},
 	_displayMoreTweets: function() {
+		var numTweets = this.state.numberTweetsToDisplay,
+			totalTweets = this.props.collection.models.length
 		this.setState({
-			numberTweetsToDisplay: this._calculateRemainingTweets()
+			numberTweetsToDisplay: this._calculateRemainingTweets(),
+			displayButton: numTweets === totalTweets ? "none" : "block"
 		})
 	},
 	_getRemainingTweets: function() {
@@ -92,14 +64,35 @@ var TweetContainer = React.createClass({
 		var moreTweetsButton = {
 			display: this.state.displayButton
 		}
-		console.log("numberTweets:",this.props.collection.models.length)
-		console.log("numberTweetstoShow:",this.state.numberTweetsToDisplay)
 		return (
-			<div className="tweet-container">
-				{this._displayTweets()}
+			<div className="tweet-view">
+				<Header />
+				<TweetContainer collection={this.state.collection} tweets={this.state.numberTweetsToDisplay} />
 				<button style={moreTweetsButton} onClick={this._displayMoreTweets}>
 					{this._getRemainingTweets()}
 				</button>
+			</div>
+			)
+	}
+})
+
+var TweetContainer = React.createClass({
+	_displayTweets: function() {
+		var jsxArr = [],
+			tweetCollection = this.props.collection
+
+		for(var i = 0; i < this.props.tweets; i++){
+			var tweetModel = tweetCollection.models[i]
+			if(tweetModel.attributes.hasOwnProperty("user")){
+				jsxArr.push(<Tweet model={tweetModel} />)
+			}
+		}
+		return jsxArr;
+	},
+	render: function() {
+		return (
+			<div className="tweet-container">
+				{this._displayTweets()}
 			</div>	
 			)
 	}
