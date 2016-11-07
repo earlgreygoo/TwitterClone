@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import WriterView from './writerView'
+import $ from 'jquery'
 
 var TweetView = React.createClass({
 	getInitialState: function() {
@@ -49,7 +50,7 @@ var Header = React.createClass({
 		return (
 			<div className="header">
 
-				<h1> HEY AND argghh </h1>
+				<h1> !TWITTER</h1>
 
 				<input placeholder="Search tweets" onKeyDown={this._search} />
 				<WriterView />
@@ -80,11 +81,32 @@ var TweetContainer = React.createClass({
 })
 
 var Tweet = React.createClass({
+
+	_tweetDelete: function() {
+		$.ajax({
+    		url: 'https://twitclone-example.now.sh/api/tweet/'+ this.props.model.get("id"),
+    		type: 'DELETE',
+    		success: function(){window.location.reload(true)}
+    		
+    
+		})
+
+	},
+
+
+//<h5>{model.get("content")}</h5>
 	render: function() {
 		var model = this.props.model
+		var hashWord = model.get("content").match(/#\w+/g)
+		var res = model.get("content").replace(hashWord, "<a href='google.com'>" + hashWord + "</a>")
+
 		return (
 			<div className="tweet">
-				<h5>{model.get("content")}</h5> 
+				<img src={model.get("user").avatarURL} />
+				
+				<h3> {model.get("content")} </h3>
+				
+				<button onClick={this._tweetDelete}> X </button> 
 			</div>
 			)
 	}
