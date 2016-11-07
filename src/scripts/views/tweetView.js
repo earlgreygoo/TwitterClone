@@ -24,7 +24,7 @@ var TweetView = React.createClass({
             currentThis.setState({
                 collection: currentThis.props.collection,
                 numberTweetsToDisplay: 0,
-                displayButton: currentThis.props.collection.models.length !== 0 ? "block" : "none"
+                displayButton: currentThis.props.collection.models.length > 1 ? "block" : "none"
             })
         }
         var resetState = function() {
@@ -32,7 +32,7 @@ var TweetView = React.createClass({
         	currentThis.setState({
         		collection: currentThis.props.collection,
         		numberTweetsToDisplay: currentThis._calculateRemainingTweets(),
-        		displayButton: currentThis.props.collection.models.length !== 0 ? "block" : "none"
+        		displayButton: currentThis.props.collection.models.length > 1 ? "block" : "none"
         	})
         }
         collection.on('update', updateState)
