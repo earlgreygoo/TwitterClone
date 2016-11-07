@@ -20,16 +20,19 @@ var TweetView = React.createClass({
 
         var currentThis = this
         var updateState = function() {
+
             currentThis.setState({
                 collection: currentThis.props.collection,
-                numberTweetsToDisplay: 0
+                numberTweetsToDisplay: 0,
+                displayButton: currentThis.props.collection.models.length !== 0 ? "block" : "none"
             })
         }
         var resetState = function() {
+        	
         	currentThis.setState({
         		collection: currentThis.props.collection,
         		numberTweetsToDisplay: currentThis._calculateRemainingTweets(),
-        		displayButton: "block"
+        		displayButton: currentThis.props.collection.models.length !== 0 ? "block" : "none"
         	})
         }
         collection.on('update', updateState)
@@ -45,9 +48,10 @@ var TweetView = React.createClass({
 	_displayMoreTweets: function() {
 		var numTweets = this.state.numberTweetsToDisplay,
 			totalTweets = this.props.collection.models.length
+			console.log(this.state.numberTweetsToDisplay)
 		this.setState({
 			numberTweetsToDisplay: this._calculateRemainingTweets(),
-			displayButton: numTweets === totalTweets ? "none" : "block"
+			displayButton: (numTweets + 5) >= totalTweets ? "none" : "block"
 		})
 	},
 	_getRemainingTweets: function() {
@@ -80,7 +84,9 @@ var TweetContainer = React.createClass({
 	_displayTweets: function() {
 		var jsxArr = [],
 			tweetCollection = this.props.collection
-
+		if(tweetCollection.length === 0){
+			jsxArr.push(<h2>No tweets found</h2>)
+		}
 		for(var i = 0; i < this.props.tweets; i++){
 			var tweetModel = tweetCollection.models[i]
 			if(tweetModel.attributes.hasOwnProperty("user")){
